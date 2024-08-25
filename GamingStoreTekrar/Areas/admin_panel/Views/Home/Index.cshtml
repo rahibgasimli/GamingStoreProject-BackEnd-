@@ -1,0 +1,90 @@
+﻿@model EmailModel
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="d-flex justify-content-between flex-wrap">
+            <div class="d-flex align-items-end flex-wrap">
+                <div class="me-md-3 me-xl-5">
+                    <h2>Welcome back,</h2>
+                </div>
+                <div class="d-flex">
+                    <i class="mdi mdi-home text-muted hover-cursor"></i>
+                    <p class="text-muted mb-0 hover-cursor">&nbsp;/&nbsp;Dashboard&nbsp;</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card card-body">
+            <div class="d-flex flex-wrap justify-content-xl-between">
+                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-account me-3 icon-lg text-danger"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Users</small>
+                        <h5 class="me-2 mb-0">@ViewBag.totalUsers</h5>
+                    </div>
+                </div>
+                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-controller me-3 icon-lg text-danger"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Games</small>
+                        <h5 class="me-2 mb-0">@ViewBag.totalGames</h5>
+                    </div>
+                </div>
+                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Views</small>
+                        <h5 class="me-2 mb-0">@ViewBag.totalViews</h5>
+                    </div>
+                </div>
+                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-drama-masks me-3 icon-lg text-warning"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Genres</small>
+                        <h5 class="me-2 mb-0">@ViewBag.totalGenres</h5>
+                    </div>
+                </div>
+                <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-tag me-3 icon-lg text-danger"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Tags</small>
+                        <h5 class="me-2 mb-0">@ViewBag.totalTags</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-body">
+            <div class="d-flex justify-content-center align-items-center">
+                <form method="post" asp-action="SendMail" asp-controller="Home">
+                    <div class="form-group">
+                        <label asp-for="@Model.Recepient"></label>
+                        <span asp-validation-for="@Model.Recepient"></span>
+                        <input asp-for="@Model.Recepient" type="email" class="form-control" id="exampleInputPassword1" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Subject"></label>
+                        <span asp-validation-for="@Model.Subject"></span>
+                        <input asp-for="@Model.Subject" type="text" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Message"></label>
+                        <span asp-validation-for="@Model.Message"></span>
+                        <textarea asp-for="@Model.Message" class="form-contol" cols="50" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" style="color:honeydew;">Send Email</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

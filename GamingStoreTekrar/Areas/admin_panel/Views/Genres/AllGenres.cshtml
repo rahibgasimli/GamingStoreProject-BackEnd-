@@ -1,0 +1,103 @@
+﻿@model GenresIndexVm
+
+@{
+    var prevPage = Model.CurrentPage - 1;
+    var nextPage = Model.CurrentPage + 1;
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2 class="card-title">All Genres</h2>
+                    </div>
+                    <div class="col-lg-4 d-flex justify-content-end">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a class="btn btn-outline-secondary" asp-action="AllGenres" asp-route-pageSize="@Model.PageSize">&lt;&lt;</a>
+                            @if (prevPage > 0)
+                            {
+                                <a class="btn btn-outline-secondary" asp-action="AllGenres" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                            }
+                            <a class="btn btn-primary active" style="color:honeydew;">@Model.CurrentPage</a>
+                            @if (nextPage <= Model.TotalPage)
+                            {
+                                <a class="btn btn-outline-secondary" asp-action="AllGenres" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                            }
+                            <a class="btn btn-outline-secondary" asp-action="AllGenres" asp-route-page="@Model.TotalPage" asp-route-pageSize="@Model.PageSize">&gt;&gt;</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 flex-column">
+                        <div class="form-group">
+                            <label for="pageSize">Genre per page</label>
+                            <select class="form-control form-control-xs" id="pageSize">
+                                @foreach (var size in Model.PageSizes)
+                                {
+                                    @if (Model.PageSize == size)
+                                    {
+                                        <option selected>@size</option>
+                                        continue;
+                                    }
+                                    <option>@size</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                @foreach (var propertyInfo in typeof(AllGenresModel).GetProperties())
+                                {
+                                    @if (propertyInfo.Name == "Id")
+                                    {
+                                        continue;
+                                    }
+                                    <th>
+                                        @propertyInfo.Name
+                                    </th>
+                                }
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var genre in Model.Genres)
+                            {
+                                <tr>
+
+                                    @foreach (var prop in genre.GetType().GetProperties())
+                                    {
+                                        if (prop.Name == "Id")
+                                        {
+                                            continue;
+                                        }
+                                        <td>
+                                            @prop.GetValue(genre)
+                                        </td>
+                                    }
+                                    <td>
+                                        <a class="btn btn-warning btn-icon-text" asp-action="Edit" asp-controller="Genres" asp-route-userId="@genre.Id">
+                                            Edit
+                                            <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-icon-text" asp-action="Delete" asp-controller="Tags">
+                                            Delete
+                                            <i class="mdi mdi-delete btn-icon-append"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section SpecialJs {
+    <script src="~/admin/js/table-paginate.js"></script>
+}

@@ -1,0 +1,10 @@
+﻿@model ErrorModel
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+    </div>
+</div>

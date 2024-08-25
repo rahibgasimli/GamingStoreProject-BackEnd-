@@ -1,0 +1,55 @@
+﻿@model EditUserModel
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div asp-validation-summary="All"></div>
+                <h4 class="card-title">Edit User Details</h4>
+                <div class="row">
+                    <div class="container mb-4">
+                        <img src="/@Model.PhotoPath" id="profileImageShow" width="200" height="200"/>
+                    </div>
+                    <div class="container">
+                        <form class="forms-sample" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="@Model.ProfilePhoto" class="form-label"></label>
+                                <input asp-for="@Model.ProfilePhoto" class="form-control" type="file" id="formFile">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.UserName">Username</label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" placeholder="Username" asp-for="@Model.UserName">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.FirstName">FirstName</label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" placeholder="FirstName" asp-for="@Model.FirstName">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.LastName">LastName</label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" placeholder="LastName" asp-for="@Model.LastName">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Age">Age</label>
+                                <input type="number" class="form-control" id="exampleInputUsername1" placeholder="Age" asp-for="@Model.Age">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Email">Email address</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" asp-for="@Model.Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="exampleInputId" asp-for="@Model.Id" hidden>
+                                <input type="text" class="form-control" id="exampleInputId" asp-for="@Model.PhotoPath" hidden>
+                            </div>
+                            <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section SpecialJs{
+    <script src="~/admin/js/admin-profile-edit.js"></script>
+}

@@ -1,0 +1,78 @@
+﻿@using GamingStoreTekrar.Entities
+@model CreateGameModel
+@{
+    var genres = (List<Genre>?)ViewData["genres"];
+    var tags = (List<GameTag>?)ViewData["tags"];
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div asp-validation-summary="All"></div>
+                <h4 class="card-title">Create a new Game</h4>
+                <div class="row">
+                    <div class="container mb-4">
+                        <img src="" id="profileImageShow" width="200" height="200" />
+                    </div>
+                    <div class="container">
+                        <form class="forms-sample" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="@Model.GameImage" class="form-label"></label>
+                                <input asp-for="@Model.GameImage" class="form-control" type="file" id="formFile">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Name"></label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" placeholder="Name" asp-for="@Model.Name">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.ShortDesc"></label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" placeholder="Short Descripton" asp-for="@Model.ShortDesc">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Description"></label>
+                                <textarea asp-for="Description" class="form-control"></textarea>
+                                <div class="form-group">
+                                    <label asp-for="@Model.Price"></label>
+                                    <input type="number" class="form-control" id="exampleInputUsername1" placeholder="Price" asp-for="@Model.Price">
+                                </div>
+                                @if (genres != null)
+                                {
+                                    <div class="form-group">
+                                        <label asp-for="@Model.Genres"></label>
+                                        <select asp-for="@Model.Genres" class="form-control" id="genreSelect">
+                                            <option selected>-----</option>
+                                            @foreach (var genre in genres)
+                                            {
+                                                <option value="@genre.Id">@genre.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+
+                                @if (tags != null)
+                                {
+                                    <div class="form-group">
+                                        <label asp-for="@Model.Tags"></label>
+                                        <select asp-for="@Model.Tags" multiple class="form-control" id="tagSelect">
+                                            <option selected>-----</option>
+                                            @foreach (var gameTag in tags)
+                                            {
+                                                <option value="@gameTag.Id">@gameTag.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section SpecialJs {
+    <script src="~/admin/js/admin-profile-edit.js"></script>
+}
