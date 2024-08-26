@@ -1,4 +1,6 @@
-﻿namespace GamingStoreTekrar.Models
+﻿using GamingStoreTekrar.Entities;
+
+namespace GamingStoreTekrar.Models
 {
     public class GamesSingleModel
     {
@@ -11,5 +13,6 @@
         public string Genres { get; set; }
         public string GameTags { get; set; }
         public int ClickCount { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

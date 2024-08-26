@@ -25,6 +25,7 @@ namespace GamingStoreTekrar.Areas.admin_panel.Controllers
             var genres = await _context.Genres
                 .Skip((page - 1) * size)
                 .Take(size)
+                .Where(g => !g.IsDeleted)
                 .Select(g => new AllGenresModel()
             {
                 Id = g.Id.ToString(),
@@ -50,6 +51,39 @@ namespace GamingStoreTekrar.Areas.admin_panel.Controllers
             return View();
         }
 
+
+        public async Task<IActionResult> Delete(string genreId)
+        {
+            if(string.IsNullOrWhiteSpace(genreId) || !Guid.TryParse(genreId,out Guid id))
+            {
+
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = "The given id isn't correct format" 
+                };
+                return View("Error",errorModel);
+            }
+
+            var genre = await _context.Genres.FindAsync(id);
+
+            if(genre == null)
+            {
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = "There isn't such genre"
+                };
+                return View("Error",errorModel);
+            }
+
+            //_context.Genres.Remove(genre);
+            //await _context.SaveChangesAsync();
+
+            genre.IsDeleted = true;
+            await _context.SaveChangesAsync();
+
+            return View("Index","Home");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateGenreModel model)
@@ -71,5 +105,6 @@ namespace GamingStoreTekrar.Areas.admin_panel.Controllers
 
             return RedirectToAction("AllGenres");
         }
+
     }
 }

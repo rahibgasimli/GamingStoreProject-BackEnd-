@@ -74,7 +74,7 @@ namespace GamingStoreTekrar.Controllers
 
             User.Claims.Append(new Claim(ClaimTypes.Name, user.FName));
 
-            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
+            if (returnUrl != null && !Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

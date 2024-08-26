@@ -1,4 +1,6 @@
-﻿namespace GamingStoreTekrar.Models
+﻿using GamingStoreTekrar.Entities;
+
+namespace GamingStoreTekrar.Models
 {
     public class GamesIndex
     {

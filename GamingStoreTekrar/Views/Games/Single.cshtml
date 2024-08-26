@@ -61,7 +61,7 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews"
                                             type="button" role="tab" aria-controls="reviews" aria-selected="false">
-                                        Reviews (3)
+                                        Reviews @(gameDetails.Reviews.Count == 0 ? " " : $"({gameDetails.Reviews.Count})")
                                     </button>
                                 </li>
                             </ul>
@@ -72,19 +72,43 @@
                                 <p>@gameDetails.Description</p>
                             </div>
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                                <p>
-                                    Coloring book air plant shabby chic, crucifix normcore raclette cred swag artisan activated
-                                    charcoal. PBR&B fanny pack pok pok gentrify truffaut kitsch helvetica jean shorts edison bulb
-                                    poutine next level humblebrag la croix adaptogen. <br><br>Hashtag poke literally locavore, beard
-                                    marfa kogi bruh artisan succulents seitan tonx waistcoat chambray taxidermy. Same cred meggings 3
-                                    wolf moon lomo irony cray hell of bitters asymmetrical gluten-free art party raw denim chillwave
-                                    tousled try-hard succulents street art.
-                                </p>
+                                @if (gameDetails.Reviews != null && gameDetails.Reviews.Count > 0)
+                                {
+                                    @foreach (var review in gameDetails.Reviews)
+                                    {
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                @if (review.User.ProfilePhoto.StartsWith("http"))
+                                                {
+                                                    <img style="width:120px; height:120px" src="@review.User.ProfilePhoto" />
+                                                }
+                                                else
+                                                {
+
+                                                    <img style="width:120px; height:120px" src="~/@review.User.ProfilePhoto" />
+                                                }
+                                                <p>@review.CreatedDate.Year-@review.CreatedDate.Month-@review.CreatedDate.Day</p>
+                                            </div>
+                                            <div class="col-lg-10">
+                                                <p>@review.ReviewText</p>
+                                            </div>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <h3>Add a review</h3>
+                    <form method="post" asp-action="AddReview" asp-controller="Games">
+                        <textarea name="reviewText" id="reviewText" class="form-control"></textarea>
+                        <input name="gameId" id="gameId" value="@gameDetails.gameId" hidden />
+                        <input type="submit" class="form-control btn-primary" />
+                    </form>
+                </div>
         </div>
     </div>
 </div>

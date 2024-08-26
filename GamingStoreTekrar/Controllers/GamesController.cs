@@ -1,13 +1,16 @@
-﻿using GamingStoreTekrar.Data;
+﻿using GamingStoreTekrar.Areas.admin_panel.Models;
+using GamingStoreTekrar.Data;
+using GamingStoreTekrar.Entities;
 using GamingStoreTekrar.Models;
 using GamingStoreTekrar.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
+using System.Security.Claims;
 
 namespace GamingStoreTekrar.Controllers
 {
-    [Authorize]
     public class GamesController : Controller
     {
         public GamesController(AppDbContext context)
@@ -17,7 +20,6 @@ namespace GamingStoreTekrar.Controllers
 
         private readonly AppDbContext _context;
 
-        [AllowAnonymous]
         public IActionResult Index(int page = 1)
         {
             ViewData["title"] = "Games";
@@ -25,6 +27,7 @@ namespace GamingStoreTekrar.Controllers
             var games = _context.Games
                 .Skip((page - 1) * 6)
                 .Take(6)
+                .Where(g => !g.IsDeleted)
                 .Select(g => new GamesIndex()
                 {
                     // MODEL == Databazaya
@@ -32,7 +35,7 @@ namespace GamingStoreTekrar.Controllers
                     Name = g.Name,
                     PhotoUrl = g.PhotoPath,
                     Price = g.Price,
-                    Genre = string.Join(",", g.Genres.Select(g => g.Name))
+                    Genre = string.Join(",", g.Genres.Where(gnr => !gnr.IsDeleted).Select(g => g.Name)),
                 }).ToList();
 
             //var chunks = games.Chunk(6).ToList();
@@ -81,6 +84,8 @@ namespace GamingStoreTekrar.Controllers
             var game = _context.Games
                 .Include(g => g.Genres)
                 .Include(g => g.GameTags)
+                .Include(g => g.Reviews)
+                .ThenInclude(review => review.User)
                 .FirstOrDefault(g => g.Id == id);
 
             if (game == null)
@@ -101,7 +106,7 @@ namespace GamingStoreTekrar.Controllers
                     {
                         Id = g.Id.ToString(),
                         Genre = g.Genres.First(gnr => gnr.Name == genre.Name).Name,
-                        PhotoPath = g.PhotoPath
+                        PhotoPath = g.PhotoPath,
                     })
                     .ToList();
 
@@ -132,6 +137,7 @@ namespace GamingStoreTekrar.Controllers
                     Genres = string.Join("||", game.Genres.Select(g => g.Name)),
                     GameTags = string.Join("||", game.GameTags.Select(g => g.Name)),
                     ClickCount = game.ClickCount,
+                    Reviews = game.Reviews
                 },
                 RelatedGames = relatedGames
             };
@@ -169,6 +175,62 @@ namespace GamingStoreTekrar.Controllers
             };
 
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> AddReview(string reviewText,string gameId)
+        {
+            if (string.IsNullOrWhiteSpace(reviewText) || string.IsNullOrWhiteSpace(gameId) || !Guid.TryParse(gameId,out Guid id))
+            {
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = "The given text or id is empty"
+                };
+                return View("Error",errorModel);
+            }
+
+            var game = await _context.Games
+                .Include(g => g.Reviews)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            var usrId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if(game == null || usrId == null)
+            {
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = "There isn't such game or you must login"
+                };
+                return View("Error",errorModel);
+            }
+
+            var usr = _context.Users.Find(usrId.Value);
+
+            if(usr == null)
+            {
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = "There were some errors"
+                };
+                return View("Error", errorModel);
+            }
+
+            var review = new Review()
+            {
+                Id = Guid.NewGuid(),
+                CreatedDate = DateTime.UtcNow,
+                ReviewText = reviewText,
+                User = usr,
+                Game = game
+            };
+
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("Single", new { gameId = gameId});
         }
 
     }

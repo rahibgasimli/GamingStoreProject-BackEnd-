@@ -11,5 +11,6 @@ namespace GamingStoreTekrar.Entities
         public string ProfilePhoto { get; set; }
         [NotMapped]
         public string FullName { get => FName + " " + LName; }
+        public List<Review> Reviews { get; set; }
     }
 }

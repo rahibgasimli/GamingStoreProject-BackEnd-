@@ -10,5 +10,6 @@
         public int ClickCount { get; set; }
         public List<Genre> Genres { get; set; }
         public List<GameTag> GameTags { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }
